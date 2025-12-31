@@ -1,0 +1,50 @@
+.skeleton-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.skeleton-image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background-color: #f0f0f0;
+    margin-bottom: 12px;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+.skeleton-info {
+    padding: 0 4px;
+}
+
+.skeleton-text {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    animation: skeleton-loading 1.5s infinite linear;
+}
+
+.skeleton-title {
+    height: 16px;
+    width: 80%;
+    margin-bottom: 8px;
+}
+
+.skeleton-price {
+    height: 14px;
+    width: 40%;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-color: #f0f0f0;
+    }
+
+    50% {
+        background-color: #e0e0e0;
+    }
+
+    100% {
+        background-color: #f0f0f0;
+    }
+}

@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: 107, 46, 46;
+  /* #6B2E2E */
+  --color-background: 250, 247, 243;
+  /* #FAF7F3 */
+  --color-secondary: 246, 239, 232;
+  /* #F6EFE8 */
+  --color-accent: 184, 139, 106;
+  /* #B88B6A */
+  --color-text-main: 46, 46, 46;
+  /* #2E2E2E */
+  --color-text-muted: 122, 111, 104;
+  /* #7A6F68 */
+}
+
+body {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  background-color: #FAF7F3;
+  color: #2E2E2E;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', serif;
+  color: #6B2E2E;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #FAF7F3;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(184, 139, 106, 0.5);
+  border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #B88B6A;
+}

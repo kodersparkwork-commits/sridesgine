@@ -1,0 +1,163 @@
+import React, { useState, useEffect } from 'react';
+import ProductCard from '../components/ProductCard';
+import FilterPanel from '../components/FilterPanel';
+import { useProductFilters } from '../hooks/useProductFilters';
+import Pagination from '../components/Pagination';
+
+import SubcategoryCircles from '../components/SubcategoryCircles';
+
+const Pendants = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [subCategory, setSubCategory] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 20;
+
+  const {
+    filteredProducts,
+    handleFilterChange,
+    getFilterStats,
+  } = useProductFilters(products);
+
+  useEffect(() => {
+    fetchPendants();
+  }, [subCategory]);
+
+  useEffect(() => { setCurrentPage(1); }, [subCategory, filteredProducts]);
+
+  const fetchPendants = async () => {
+    try {
+      setLoading(true);
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const url = new URL(`${baseUrl}/products`);
+      url.searchParams.set('category', 'pendants');
+      if (subCategory) url.searchParams.set('subCategory', subCategory);
+      const response = await fetch(url.toString());
+
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.products);
+      } else {
+        throw new Error('Failed to fetch pendants');
+      }
+    } catch (err) {
+      console.error('Error fetching pendants:', err);
+      setError('Failed to load pendants. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="category-page">
+      {/* Page Header */}
+      <section className="category-header">
+        <div className="container">
+          <h1 className="category-title">Pendants Collection</h1>
+          <p className="category-description">
+            Express your personality with our beautiful pendant collection. From spiritual symbols to
+            modern designs, each pendant tells a unique story.
+          </p>
+        </div>
+      </section>
+
+      {/* Subcategories Circles below banner */}
+      <div className="container">
+        <SubcategoryCircles
+          value={subCategory}
+          onChange={setSubCategory}
+          items={[
+            { value: '', label: 'ALL', image: 'https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?w=300&h=300&fit=crop' },
+            { value: 'jada', label: 'JACK/VENKY', image: 'https://res.cloudinary.com/dm94ctges/image/upload/v1761929800/133F6920-6BB1-4B37-89F4-B3ECA72871E6_gz5xlm.jpg' },
+            { value: 'nose-rings', label: 'RING/NOSE RING', image: 'https://res.cloudinary.com/dm94ctges/image/upload/v1761822777/WhatsApp-Image-2023-12-20-at-13.11.04-1.jpeg_kbq5yn.jpg' },
+            { value: 'matilu', label: 'MATTILU/MATTALS', image: 'https://res.cloudinary.com/dm94ctges/image/upload/v1761822775/images_90.jpeg_gwtbh7.jpg' },
+            { value: 'hip-belt-tikka', label: 'HIPBELT/TIKKA', image: 'https://res.cloudinary.com/dm94ctges/image/upload/v1761929810/F871C694-3C47-4CA3-B215-3C77FBA02C8C_q2gujy.jpg' },
+          ]}
+        />
+      </div>
+
+      {/* Products Section with Filters */}
+      <section className="category-products">
+        <div className="container">
+          <div className="products-layout">
+            {/* Filter Sidebar */}
+            <aside className="filters-sidebar">
+              <FilterPanel
+                products={products}
+                onFilterChange={handleFilterChange}
+                isOpen={isFilterOpen}
+                onToggle={() => setIsFilterOpen(!isFilterOpen)}
+              />
+            </aside>
+
+            {/* Products Grid */}
+            <main className="products-main">
+              {/* Subcategory chips replaced by circles (above) */}
+
+              {/* Results Header */}
+              <div className="results-header">
+                <div className="results-info" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                  <div>
+                    <h2 style={{ margin: 0 }}>Showing {getFilterStats().filtered} of {getFilterStats().total} pendants</h2>
+                    {getFilterStats().activeFilters > 0 && (
+                      <span className="active-filters">
+                        {getFilterStats().activeFilters} filter{getFilterStats().activeFilters !== 1 ? 's' : ''} applied
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    className="filter-toggle-btn"
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                    aria-label="Open filters"
+                  >
+                    <span className="filter-icon" aria-hidden>⚙️</span>
+                    <span>Filters</span>
+                  </button>
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="loading-message">Loading pendants...</div>
+              ) : error ? (
+                <div className="error-message">{error}</div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="no-products">
+                  <p>No pendants match your current filters. Try adjusting your search criteria.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="products-grid">
+                    {filteredProducts
+                      .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+                      .map(product => (
+                        <ProductCard key={product._id} product={{
+                          productId: product.productId,
+                          id: product._id,
+                          name: product.name,
+                          price: product.price,
+                          images: product.images || [],
+                          image: product.images?.[0] || product.image,
+                          inStock: product.inStock,
+                          description: product.description,
+                        }} />
+                      ))}
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalItems={filteredProducts.length}
+                    pageSize={PAGE_SIZE}
+                    onPageChange={setCurrentPage}
+                  />
+                </>
+              )}
+            </main>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Pendants;
