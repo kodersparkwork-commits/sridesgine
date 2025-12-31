@@ -122,6 +122,35 @@ const ProductCard = ({ product }) => {
               )}
             </div>
           </div>
+
+          {/* Mobile Add to Cart Button - Always Visible on Mobile */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!checkAuth('add to cart')) return;
+              if (inCart) {
+                navigate('/cart');
+              } else {
+                addToCart(normalized, 1);
+              }
+            }}
+            className={`md:hidden mt-3 w-full py-2 px-4 rounded-full font-medium text-sm transition-all flex items-center justify-center gap-2 ${inCart
+                ? 'bg-primary text-white'
+                : 'bg-secondary text-primary border border-primary hover:bg-primary hover:text-white'
+              }`}
+          >
+            {inCart ? (
+              <>
+                <ShoppingBag size={16} />
+                View Cart
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={16} />
+                Add to Cart
+              </>
+            )}
+          </button>
         </div>
       </div>
 

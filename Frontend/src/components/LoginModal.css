@@ -3,30 +3,37 @@
   position: absolute;
   top: 18px;
   right: 18px;
-  width: 38px;
-  height: 38px;
-  background: rgba(255,255,255,0.85);
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.95);
   border: none;
   border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+  box-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
   color: #2c3e50;
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2200;
-  opacity: 0.85;
+  z-index: 10003;
+  opacity: 1;
   transition: background 0.18s, color 0.18s, transform 0.18s, opacity 0.18s;
   outline: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
-.ld-modal-close-btn:hover, .ld-modal-close-btn:focus {
+
+.ld-modal-close-btn:hover,
+.ld-modal-close-btn:focus {
   background: #f2f6fa;
   color: #e74c3c;
   opacity: 1;
-  transform: rotate(90deg) scale(1.08);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 6px 16px rgba(44, 62, 80, 0.2);
 }
+
 .ld-otp-status-success {
   color: #27ae60;
   font-size: 0.97rem;
@@ -34,6 +41,7 @@
   margin-right: 10px;
   white-space: nowrap;
 }
+
 .ld-otp-status-error {
   color: #e74c3c;
   font-size: 1rem;
@@ -43,6 +51,7 @@
   letter-spacing: 0.01em;
   display: inline-block;
 }
+
 /* Login Modal Overlay */
 .ld-modal-overlay {
   position: fixed;
@@ -100,7 +109,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 .ld-modal-logo {
@@ -397,25 +406,43 @@
 
 /* Animations */
 @keyframes ld-fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes ld-modalSlideIn {
-  from { 
-    opacity: 0; 
-    transform: translate(-50%, -48%) scale(0.95); 
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
   }
-  to { 
-    opacity: 1; 
-    transform: translate(-50%, -50%) scale(1); 
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
 @keyframes ld-bounce {
-  0%, 20%, 60%, 100% { transform: scale(1); }
-  40% { transform: scale(1.1); }
-  80% { transform: scale(1.05); }
+
+  0%,
+  20%,
+  60%,
+  100% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.1);
+  }
+
+  80% {
+    transform: scale(1.05);
+  }
 }
 
 /* Responsive Design */
@@ -424,15 +451,15 @@
     height: 95vh;
     max-height: 95vh;
   }
-  
+
   .ld-modal-content {
     padding: 30px 25px;
   }
-  
+
   .ld-login-form-inner {
     gap: 1.5rem;
   }
-  
+
   .ld-login-header {
     margin-bottom: 1.5rem;
   }
@@ -444,33 +471,43 @@
     height: 600px;
     border-radius: 10px;
   }
-  
+
+  .ld-modal-close-btn {
+    width: 44px;
+    height: 44px;
+    top: 12px;
+    right: 12px;
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.2);
+  }
+
   .ld-modal-banner {
     padding: 30px 20px;
   }
-  
+
   .ld-modal-logo {
     font-size: 40px;
   }
-  
+
   .ld-modal-brand {
     font-size: 1.5rem;
   }
-  
+
   .ld-modal-content {
     padding: 25px 20px;
   }
-  
+
   .ld-login-title {
     font-size: 1.4rem;
   }
-  
+
   .ld-otp-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .ld-otp-sent-text,
   .ld-otp-resend-text {
     font-size: 0.85rem;
@@ -482,19 +519,19 @@
   .ld-modal {
     height: 98vh;
   }
-  
+
   .ld-modal-content {
     padding: 20px 25px;
   }
-  
+
   .ld-login-form-inner {
     gap: 1.2rem;
   }
-  
+
   .ld-input-field {
     padding: 12px 14px;
   }
-  
+
   .ld-login-btn {
     padding: 12px 20px;
   }
