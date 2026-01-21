@@ -8,6 +8,8 @@ import { resolveImageUrl } from '../utils/imageUrl';
 import { Check, Heart, ShoppingBag, Truck, ShieldCheck, RefreshCw, Star, Minus, Plus, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import { dummyProducts } from '../data/dummyData';
+
 const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -40,13 +42,29 @@ const ProductDetails = () => {
     try {
       setLoading(true);
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${baseUrl}/products/${productId}`);
-      const data = await response.json();
 
-      if (data.product) {
-        setProduct(data.product);
-        if (data.product.sizes && data.product.sizes.length > 0) {
-          setSelectedSize(data.product.sizes[0]);
+      try {
+        const response = await fetch(`${baseUrl}/products/${productId}`);
+        const data = await response.json();
+
+        if (data.product) {
+          setProduct(data.product);
+          if (data.product.sizes && data.product.sizes.length > 0) {
+            setSelectedSize(data.product.sizes[0]);
+          }
+          return;
+        }
+      } catch (apiError) {
+        // API failed, try dummy data
+        console.log('API fetch failed, trying dummy data...');
+      }
+
+      // Fallback to dummy data
+      const dummyProduct = dummyProducts.find(p => p._id === productId);
+      if (dummyProduct) {
+        setProduct(dummyProduct);
+        if (dummyProduct.sizes && dummyProduct.sizes.length > 0) {
+          setSelectedSize(dummyProduct.sizes[0]);
         }
       } else {
         setError('Product not found');
@@ -62,12 +80,27 @@ const ProductDetails = () => {
   const fetchRelatedProducts = async () => {
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${baseUrl}/products?category=${product.category}`);
-      const data = await response.json();
+      let products = [];
 
-      if (data.products) {
-        const related = data.products
-          .filter(p => p.productId !== productId && p._id !== product._id)
+      try {
+        const response = await fetch(`${baseUrl}/products?category=${product.category}`);
+        const data = await response.json();
+        if (data.products) {
+          products = data.products;
+        }
+      } catch (apiError) {
+        // API failed, use dummy data
+        products = dummyProducts.filter(p => p.category === product.category);
+      }
+
+      // If API returned empty or failed, ensuring we have products from dummy data if available
+      if (products.length === 0) {
+        products = dummyProducts.filter(p => p.category === product.category);
+      }
+
+      if (products.length > 0) {
+        const related = products
+          .filter(p => (p.productId || p._id) !== (product.productId || product._id))
           .slice(0, 4);
         setRelatedProducts(related);
       }

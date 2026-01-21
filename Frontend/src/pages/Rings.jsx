@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import FilterPanel from '../components/FilterPanel';
 import { useProductFilters } from '../hooks/useProductFilters';
 import Pagination from '../components/Pagination';
+import { dummyProducts } from '../data/dummyData';
 
 import SubcategoryCircles from '../components/SubcategoryCircles';
 
@@ -39,13 +40,18 @@ const Rings = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setProducts(data.products);
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+        } else {
+          setProducts(dummyProducts.filter(p => p.category === 'rings'));
+        }
       } else {
         throw new Error('Failed to fetch rings');
       }
     } catch (err) {
       console.error('Error fetching rings:', err);
-      setError('Failed to load rings. Please try again later.');
+      setProducts(dummyProducts.filter(p => p.category === 'rings'));
+      setError('');
     } finally {
       setLoading(false);
     }

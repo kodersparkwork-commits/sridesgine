@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { dummyOrders } from '../data/dummyData';
 import './UserOrders.css';
 
 const UserOrders = () => {
@@ -21,14 +22,14 @@ const UserOrders = () => {
       let userEmail = user?.email;
       try {
         // Try to fetch latest user profile
-  const profileRes = await fetch(`${baseUrl}/profile`, { credentials: 'include' });
+        const profileRes = await fetch(`${baseUrl}/profile`, { credentials: 'include' });
         if (profileRes.ok) {
           const profileData = await profileRes.json();
           if (profileData.user && profileData.user.email) {
             userEmail = profileData.user.email;
           }
         }
-      } catch {}
+      } catch { }
       if (!userEmail) {
         console.log('No userEmail, setting orders to []');
         setOrders([]);
@@ -37,18 +38,18 @@ const UserOrders = () => {
       }
       console.log('Fetching orders for:', userEmail);
       try {
-  const res = await fetch(`${baseUrl}/user-orders/${userEmail}`);
+        const res = await fetch(`${baseUrl}/user-orders/${userEmail}`);
         if (res.ok) {
           const data = await res.json();
           console.log('Fetched orders:', data.orders);
           setOrders(data.orders);
         } else {
           console.log('Fetch failed:', res.status);
-          setOrders([]);
+          setOrders(dummyOrders);
         }
       } catch (err) {
         console.log('Fetch error:', err);
-        setOrders([]);
+        setOrders(dummyOrders);
       }
       setLoading(false);
     };
@@ -125,7 +126,7 @@ const UserOrders = () => {
             <div className="uop-empty-icon">📦</div>
             <h3 className="uop-empty-title">No orders yet</h3>
             <p className="uop-empty-text">Your orders will appear here once you make a purchase</p>
-            <button 
+            <button
               className="uop-empty-btn"
               onClick={() => navigate('/')}
             >
@@ -173,12 +174,12 @@ const UserOrders = () => {
                       <span className="uop-payment-method">
                         💳 Card
                       </span>
-                      <span 
+                      <span
                         className="uop-payment-status"
                         style={{ color: getPaymentStatusColor(order.payment?.status) }}
                       >
-                        {order.payment?.status ? 
-                          order.payment.status.charAt(0).toUpperCase() + order.payment.status.slice(1) 
+                        {order.payment?.status ?
+                          order.payment.status.charAt(0).toUpperCase() + order.payment.status.slice(1)
                           : 'Pending'
                         }
                       </span>

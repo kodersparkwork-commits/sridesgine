@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import FilterPanel from '../components/FilterPanel';
 import Pagination from '../components/Pagination';
 import { useProductFilters } from '../hooks/useProductFilters';
+import { dummyProducts } from '../data/dummyData';
 
 import SubcategoryCircles from '../components/SubcategoryCircles';
 
@@ -39,13 +40,18 @@ const TempleJewellery = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setProducts(data.products);
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+        } else {
+          setProducts(dummyProducts.filter(p => p.category === 'temple-jewellery'));
+        }
       } else {
         throw new Error('Failed to fetch temple jewellery');
       }
     } catch (err) {
       console.error('Error fetching temple jewellery:', err);
-      setError('Failed to load temple jewellery. Please try again later.');
+      setProducts(dummyProducts.filter(p => p.category === 'temple-jewellery'));
+      setError('');
     } finally {
       setLoading(false);
     }

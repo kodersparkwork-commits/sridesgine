@@ -5,6 +5,7 @@ import AddProduct from '../components/AddProduct';
 import EditProduct from '../components/EditProduct';
 import './AdminDashboard.css';
 import { FiRefreshCw, FiBarChart2, FiShoppingBag, FiPackage, FiSearch, FiPlus, FiDollarSign } from 'react-icons/fi';
+import { dummyProducts, dummyOrders } from '../data/dummyData';
 
 const AdminDashboard = () => {
   const { dashboardData, loadDashboard, loading, isAdmin, statusLoading } = useContext(AdminContext);
@@ -57,11 +58,14 @@ const AdminDashboard = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setProducts(data.products);
-        setProductsPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 1, hasNext: false, hasPrev: false });
+        setProducts(data.products && data.products.length > 0 ? data.products : dummyProducts);
+        setProductsPagination(data.pagination || { page: 1, limit: 10, total: dummyProducts.length, pages: 1, hasNext: false, hasPrev: false });
+      } else {
+        setProducts(dummyProducts);
       }
     } catch (error) {
       console.error('Error loading products:', error);
+      setProducts(dummyProducts);
     }
     setProductsLoading(false);
   };
@@ -90,11 +94,14 @@ const AdminDashboard = () => {
       const response = await fetch(`${baseUrl}/orders?page=${page}&limit=10`, { credentials: 'include' });
       if (response.ok) {
         const data = await response.json();
-        setOrders(data.orders);
+        setOrders(data.orders && data.orders.length > 0 ? data.orders : dummyOrders);
         setOrdersPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 1, hasNext: false, hasPrev: false });
+      } else {
+        setOrders(dummyOrders);
       }
     } catch (error) {
       console.error('Error loading orders:', error);
+      setOrders(dummyOrders);
     }
     setOrdersLoading(false);
   };
@@ -142,7 +149,7 @@ const AdminDashboard = () => {
   };
 
   const handleProductUpdated = (updatedProduct) => {
-    setProducts(prev => prev.map(p => 
+    setProducts(prev => prev.map(p =>
       p.productId === updatedProduct.productId ? updatedProduct : p
     ));
     loadProductStats();
@@ -214,14 +221,14 @@ const AdminDashboard = () => {
                     <tr key={order._id}>
                       <td>{order.userEmail}</td>
                       <td>
-                        {order.address.name}<br/>
-                        {order.address.doorNo ? order.address.doorNo + ', ' : ''}{order.address.addressLine}{order.address.landmark ? ', ' + order.address.landmark : ''}<br/>
-                        {order.address.city}, {order.address.state}, {order.address.country} - {order.address.pincode}<br/>
+                        {order.address.name}<br />
+                        {order.address.doorNo ? order.address.doorNo + ', ' : ''}{order.address.addressLine}{order.address.landmark ? ', ' + order.address.landmark : ''}<br />
+                        {order.address.city}, {order.address.state}, {order.address.country} - {order.address.pincode}<br />
                         {order.address.phone}
                       </td>
                       <td>
-                        {order.payment.method === 'card' ? 'Card' : 'COD'}<br/>
-                        Status: {order.payment.status}<br/>
+                        {order.payment.method === 'card' ? 'Card' : 'COD'}<br />
+                        Status: {order.payment.status}<br />
                         {order.payment.razorpayPaymentId && <span>ID: {order.payment.razorpayPaymentId}</span>}
                       </td>
                       <td>
@@ -252,8 +259,8 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="adbp-pagination">
-            <button 
-              disabled={!ordersPagination.hasPrev} 
+            <button
+              disabled={!ordersPagination.hasPrev}
               onClick={() => loadOrders(ordersPagination.page - 1)}
               className="adbp-pagination-btn"
             >
@@ -262,8 +269,8 @@ const AdminDashboard = () => {
             <span className="adbp-pagination-info">
               Page {ordersPagination.page} of {ordersPagination.pages}
             </span>
-            <button 
-              disabled={!ordersPagination.hasNext} 
+            <button
+              disabled={!ordersPagination.hasNext}
               onClick={() => loadOrders(ordersPagination.page + 1)}
               className="adbp-pagination-btn"
             >
@@ -294,8 +301,8 @@ const AdminDashboard = () => {
           <p>Welcome back, Administrator</p>
         </div>
         <div className="adbp-header-actions">
-          <button 
-            className="adbp-refresh-btn" 
+          <button
+            className="adbp-refresh-btn"
             onClick={() => {
               loadDashboard();
               loadOrders();
@@ -310,19 +317,19 @@ const AdminDashboard = () => {
       </div>
 
       <div className="adbp-dashboard-tabs">
-        <button 
+        <button
           className={`adbp-tab ${activeTab === 'overview' ? 'adbp-tab-active' : ''}`}
           onClick={() => setActiveTab('overview')}
         >
           <FiBarChart2 /> Overview
         </button>
-        <button 
+        <button
           className={`adbp-tab ${activeTab === 'products' ? 'adbp-tab-active' : ''}`}
           onClick={() => setActiveTab('products')}
         >
           <FiShoppingBag /> Products
         </button>
-        <button 
+        <button
           className={`adbp-tab ${activeTab === 'orders' ? 'adbp-tab-active' : ''}`}
           onClick={() => setActiveTab('orders')}
         >
@@ -360,7 +367,7 @@ const AdminDashboard = () => {
           <div className="adbp-products-tab">
             <div className="adbp-section-header">
               <h3>Product Management</h3>
-              <button 
+              <button
                 onClick={() => setShowAddProduct(true)}
                 className="adbp-add-product-btn"
               >
@@ -395,8 +402,8 @@ const AdminDashboard = () => {
                 <option value="sarees">Sarees</option>
                 <option value="dresses">Dresses</option>
               </select>
-              <button 
-                onClick={() => loadProducts(1, productSearch, productCategory)} 
+              <button
+                onClick={() => loadProducts(1, productSearch, productCategory)}
                 className="adbp-search-btn"
               >
                 Search
@@ -481,14 +488,14 @@ const AdminDashboard = () => {
                               )}
                             </div>
                             <div className="adbp-product-actions">
-                              <button 
-                                className="adbp-action-btn adbp-edit-btn" 
+                              <button
+                                className="adbp-action-btn adbp-edit-btn"
                                 onClick={() => handleEditProduct(product)}
                               >
                                 Edit
                               </button>
-                              <button 
-                                className="adbp-action-btn adbp-delete-btn" 
+                              <button
+                                className="adbp-action-btn adbp-delete-btn"
                                 onClick={() => handleDeleteProduct(product.productId)}
                               >
                                 Delete
@@ -501,8 +508,8 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 <div className="adbp-pagination">
-                  <button 
-                    disabled={!productsPagination.hasPrev} 
+                  <button
+                    disabled={!productsPagination.hasPrev}
                     onClick={() => loadProducts(productsPagination.page - 1, productSearch, productCategory)}
                     className="adbp-pagination-btn"
                   >
@@ -511,8 +518,8 @@ const AdminDashboard = () => {
                   <span className="adbp-pagination-info">
                     Page {productsPagination.page} of {productsPagination.pages}
                   </span>
-                  <button 
-                    disabled={!productsPagination.hasNext} 
+                  <button
+                    disabled={!productsPagination.hasNext}
                     onClick={() => loadProducts(productsPagination.page + 1, productSearch, productCategory)}
                     className="adbp-pagination-btn"
                   >
@@ -528,14 +535,14 @@ const AdminDashboard = () => {
       </div>
 
       {showAddProduct && (
-        <AddProduct 
+        <AddProduct
           onClose={() => setShowAddProduct(false)}
           onProductAdded={handleProductAdded}
         />
       )}
 
       {showEditProduct && editingProduct && (
-        <EditProduct 
+        <EditProduct
           product={editingProduct}
           onClose={() => {
             setShowEditProduct(false);

@@ -5,6 +5,7 @@ import SkeletonProductCard from '../components/SkeletonProductCard';
 import { Truck, RefreshCw, Headset, Banknote, ArrowRight, ArrowLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { HeroGeometric } from '../components/ui/HeroGeometric';
+import { dummyProducts } from '../data/dummyData';
 
 const JewelryLandingPage = () => {
   const categoriesRef = useRef(null);
@@ -20,11 +21,14 @@ const JewelryLandingPage = () => {
       // Fetch latest 10 products for New Arrivals
       const recentRes = await fetch(`${baseUrl}/products?page=1&limit=10`);
       const recentData = await recentRes.json();
-      if (recentData && Array.isArray(recentData.products)) {
+      if (recentData && Array.isArray(recentData.products) && recentData.products.length > 0) {
         setNewArrivals(recentData.products);
+      } else {
+        setNewArrivals(dummyProducts.slice(0, 10));
       }
     } catch (e) {
       console.error('Error fetching data:', e);
+      setNewArrivals(dummyProducts.slice(0, 10));
     } finally {
       setLoading(false);
     }

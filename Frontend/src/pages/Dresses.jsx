@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import FilterPanel from '../components/FilterPanel';
 import Pagination from '../components/Pagination';
 import { useProductFilters } from '../hooks/useProductFilters';
+import { dummyProducts } from '../data/dummyData';
 
 
 const Dresses = () => {
@@ -36,13 +37,18 @@ const Dresses = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setProducts(data.products);
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+        } else {
+          setProducts(dummyProducts.filter(p => p.category === 'dresses'));
+        }
       } else {
         throw new Error('Failed to fetch dresses');
       }
     } catch (err) {
       console.error('Error fetching dresses:', err);
-      setError('Failed to load dresses. Please try again later.');
+      setProducts(dummyProducts.filter(p => p.category === 'dresses'));
+      setError('');
     } finally {
       setLoading(false);
     }

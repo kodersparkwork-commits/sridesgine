@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import FilterPanel from '../components/FilterPanel';
 import { useProductFilters } from '../hooks/useProductFilters';
 import Pagination from '../components/Pagination';
+import { dummyProducts } from '../data/dummyData';
 
 import SubcategoryCircles from '../components/SubcategoryCircles';
 
@@ -38,13 +39,18 @@ const Pendants = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setProducts(data.products);
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+        } else {
+          setProducts(dummyProducts.filter(p => p.category === 'pendants'));
+        }
       } else {
         throw new Error('Failed to fetch pendants');
       }
     } catch (err) {
       console.error('Error fetching pendants:', err);
-      setError('Failed to load pendants. Please try again later.');
+      setProducts(dummyProducts.filter(p => p.category === 'pendants'));
+      setError('');
     } finally {
       setLoading(false);
     }
